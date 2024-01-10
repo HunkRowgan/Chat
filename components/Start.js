@@ -1,3 +1,5 @@
+//start.js
+
 import { View, StyleSheet, Text, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView, Alert } from "react-native"
 import Chat from "./Chat"
 import { useState } from "react"

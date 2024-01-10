@@ -1,71 +1,64 @@
+//chat.js
+
 import { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Platform, KeyboardAvoidingView } from 'react-native';
-import { GiftedChat, Bubble } from "react-native-gifted-chat";
+import { StyleSheet, View, Platform, KeyboardAvoidingView, Text } from "react-native";
+import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import { collection, query, addDoc, onSnapshot, orderBy } from "firebase/firestore";
 
 //set page title to name prop and return view component with text
-const Chat = ({ route, navigation }) => {
-  const { name } = route.params;
-  const {background} = route.params;
+const Chat = ({ route, navigation, db }) => {
+  const { name } = route.params
+  const { background } = route.params;
+  const { userID } = route.params
 
   const [messages, setMessages] = useState([]); //create messages state
 
   // send messages
-  const onSend = (newMessages) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
-  }
+  const onSend = (newMessages) => {addDoc(collection(db, "messages"), newMessages[0])}
 
 //customise UI
   const renderBubble = (props) => {
     return <Bubble
-      {...props}
-      wrapperStyle={{
-        right: {
-          backgroundColor: "#000"
-        },
-        left: {
-          backgroundColor: "#FFF"
-        }
-      }}
+    {...props}
+    wrapperStyle={{
+      right: {
+        backgroundColor: '#2a9d8f',
+      },
+      left: {
+        backgroundColor: '#fff'
+      }
+    }}
     />
   }
 
+  //fetch messages from database
   useEffect(() => {
     navigation.setOptions({ title: name });
-  }, []);
+    const q = query(collection(db, "messages"), orderBy("createdAt", "desc"))
+    const unsubMessages = onSnapshot(q, (documentsSnapshot) => {
+      let newMessages = []
+      documentsSnapshot.forEach(doc => {
+        newMessages.push({ id: doc.id, ...doc.data(), createdAt: new Date(doc.data().createdAt.toMillis())})
+      })
+      setMessages(newMessages)
+    })
 
-  //default message upon opening chat page (gifted template) + syst message
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        _id: 2,
-        text: 'This is a system message',
-        createdAt: new Date(),
-        system: true,
-      },
-    ]);
-  }, []);
-
+    return () => {
+      if (unsubMessages) unsubMessages()
+    }
+  }, [])
 
 
  return (
   <View style={[styles.container, {backgroundColor: background}]}>
-     <Text>Hello {name}</Text>
+     <Text>Hi {name}! Join the chat!</Text>
      <GiftedChat
       messages={messages}
       renderBubble={renderBubble}
       onSend={messages => onSend(messages)}
       user={{
-        _id: 1
+        _id: userID,
+        name: name
       }}
     />
     { Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null }
