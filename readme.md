@@ -26,4 +26,4 @@ Firebase Cloud Storage: Effortlessly store and retrieve media files, enhancing t
 
 Gifted Chat Library: Leveraging the capabilities of the Gifted Chat library to enhance the chat interface and provide a rich user experience.
 
-Feel free to explore and contribute to this exciting mobile chat application built with cutting-edge technologies!
+Feel free to let me know what you think!

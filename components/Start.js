@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, TextInput, ImageBackground, TouchableOpacity } from "react-native"
+import { View, StyleSheet, Text, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView } from "react-native"
 import Chat from "./Chat"
 import { useState } from "react"
 
@@ -14,11 +14,16 @@ const Start = ({ navigation }) => {
                 <Text style={styles.appTitle}>App Title</Text>
             </View>
             <View style={styles.mainView}>
-                <TextInput style={styles.textInput} value={name} onChangeText={setName} placeholder='Type your username here' />
+                <TextInput
+                style={styles.textInput}
+                value={name} onChangeText={setName}
+                placeholder='Type your username here'
+                />
 
                 {/* View with text and colors container  */}
                 <View>
-                    <Text style={styles.chooseText}>Choose Background Color</Text>
+                    <Text
+                    style={styles.chooseText}>Choose Background Color</Text>
                 {/* only colors container     */}
                     <View style={styles.colorsContainer}>
                         <TouchableOpacity
@@ -84,7 +89,6 @@ const styles = StyleSheet.create({
         borderColor: '#757083',
         marginTop: '8%',
         marginBottom: 15,
-        position: 'absolute',
         top: 5
     },
     chooseText: {
@@ -92,13 +96,14 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         color: '#757083',
         opacity: 100,
-        marginBottom: 20
+
     },
     colorsContainer: {
         display: 'flex',
         flexDirection: 'row',
         width: '80%',
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        
     },
     selectStyle: {
         width: 60,
@@ -120,8 +125,8 @@ const styles = StyleSheet.create({
     },
 
     buttonStart: {
-        position: 'absolute',
-        bottom: 5,
+        
+        top: 10,
         marginBottom: "6%",
         fontSize: 16,
         fontWeight: '600',
