@@ -1,12 +1,29 @@
-import { View, StyleSheet, Text, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView } from "react-native"
+import { View, StyleSheet, Text, TextInput, ImageBackground, TouchableOpacity, Platform, KeyboardAvoidingView, Alert } from "react-native"
 import Chat from "./Chat"
 import { useState } from "react"
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const image = { uri: 'https://i.pinimg.com/564x/e6/27/ac/e627ac9dbda722a8676142a86e78d425.jpg' }
 
 const Start = ({ navigation }) => {
     const [name, setName] = useState('')
     const [background, setBackground] = useState('')
+
+    // initialized the Firebase authentication handler
+    const auth = getAuth()
+
+    // once the user is signed in, the app navigates to the Chat screen while passing result.user.uid (which is assigned to the route parameter userID)
+    const signInUser = () => {
+        signInAnonymously(auth)
+            .then(result => {
+                navigation.navigate('Chat', { name: name, background: background, userID: result.user.uid })
+                Alert.alert('Sign-in Successful!')
+            })
+            .catch((error) => {
+                Alert.alert('Sign-in failed, try again!')
+            })
+    }
+
 
     return (
         <ImageBackground source={image} resizeMode="cover" style={styles.container}>
@@ -48,7 +65,7 @@ const Start = ({ navigation }) => {
 
                 <TouchableOpacity
                     style={styles.buttonStart}
-                    onPress={() => navigation.navigate('Chat', { name: name, background: background })}>
+                    onPress={signInUser}>
                     <Text style={styles.textButton}>Start Chatting</Text>
                 </TouchableOpacity>
             </View>
