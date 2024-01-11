@@ -11,6 +11,9 @@ import { initializeApp } from "firebase/app"; // Import the functions you need f
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { useNetInfo } from '@react-native-community/netinfo';
+import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
+import { getStorage } from "firebase/storage";
 
   // Create the navigator
 const Stack = createNativeStackNavigator();
@@ -41,15 +44,22 @@ const App = () => {
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
 
+
     // Initialize Cloud Firestore and get a reference to the service
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Start">
           <Stack.Screen name="Start" component={Start} />
           <Stack.Screen name="Chat" >
-            {props => <Chat  isConnected={connectionStatus.isConnected} db={db} {...props} />}  
+            {props => <Chat
+              isConnected={connectionStatus.isConnected}
+              db={db}
+              storage={storage}
+              {...props}
+            />}  
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
